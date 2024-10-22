@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.collection.mutableIntSetOf
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -41,6 +40,7 @@ import com.example.a511lasalleapp.ui.screens.HomeScreen
 import com.example.a511lasalleapp.ui.screens.NewsDetailScreen
 import com.example.a511lasalleapp.ui.screens.SettingsScreen
 import com.example.a511lasalleapp.ui.theme._511LaSalleAppTheme
+import com.example.a511lasalleapp.ui.screens.PaymentScreen
 import com.example.a511lasalleapp.utils.Screens
 import com.exyte.animatednavbar.AnimatedNavigationBar
 import com.exyte.animatednavbar.animation.indendshape.shapeCornerRadius
@@ -50,11 +50,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            var isDarkTheme by rememberSaveable { mutableStateOf(false) } // Estado del tema
             val navController = rememberNavController()
-            var selectedItem by rememberSaveable {
-                mutableIntStateOf(0)
-            }
-            _511LaSalleAppTheme {
+            var selectedItem by rememberSaveable { mutableIntStateOf(0) }
+
+            _511LaSalleAppTheme(useDarkTheme = isDarkTheme) { // Aplicamos el tema globalmente
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
@@ -79,22 +79,17 @@ class MainActivity : ComponentActivity() {
                                         imageVector = bottomNavigationItem.icon,
                                         contentDescription = bottomNavigationItem.title,
                                         tint = if (selectedItem == index) MaterialTheme.colorScheme.onPrimary
-                                               else MaterialTheme.colorScheme.onPrimary.copy(
-                                            alpha = 0.5f
-                                        ),
+                                        else MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
                                         modifier = Modifier.size(26.dp)
                                     )
                                     Text(
                                         bottomNavigationItem.title,
                                         style = MaterialTheme.typography.bodySmall,
                                         color = if (selectedItem == index) MaterialTheme.colorScheme.onPrimary
-                                                else MaterialTheme.colorScheme.onPrimary.copy(
-                                            alpha = 0.5f
-                                        ),
+                                        else MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
                                     )
                                 }
                             }
-
                         }
                     }
                 ) { innerPadding ->
@@ -109,20 +104,17 @@ class MainActivity : ComponentActivity() {
                             CalendarScreen(innerPadding = innerPadding)
                         }
                         composable(route = Screens.Settings.route) {
-                            SettingsScreen(innerPadding = innerPadding)
+                            SettingsScreen(innerPadding = innerPadding, isDarkTheme = isDarkTheme) {
+                                isDarkTheme = !isDarkTheme // Cambia el estado del tema
+                            }
                         }
-                        composable(
-                            route = Screens.NewsDetail.route+"/{newsId}",
-                            arguments = listOf(
-                                navArgument("newsId"){
-                                    type=NavType.IntType
-                                }
-                            )
-                        ) {
+                        composable(route = Screens.Payments.route) { // Aquí está la pantalla de pagos
+                            PaymentScreen(innerPadding = innerPadding)
+                        }
+                        composable(route = Screens.NewsDetail.route + "/{newsId}", arguments = listOf(navArgument("newsId") { type = NavType.IntType })) {
                             val newsId = it.arguments?.getInt("newsId") ?: 0
                             NewsDetailScreen(innerPadding = innerPadding, newsId = newsId)
                         }
-
                     }
                 }
             }

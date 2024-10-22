@@ -69,4 +69,6 @@ dependencies {
     implementation(libs.animated.navigation.bar)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.coil.kt.coil.compose)
+    implementation ("androidx.compose.runtime:runtime-saveable:1.5.0") // O la versión que estés utilizando
+
 }

@@ -1,9 +1,10 @@
 package com.example.a511lasalleapp.utils
 
-sealed class Screens(val route : String) {
-    data object Home : Screens("home")
-    data object Grades : Screens("grades")
-    data object Calendar : Screens("calendar")
-    data object Settings : Screens("settings")
-    data object NewsDetail : Screens("news-detail")
+sealed class Screens(val route: String) {
+    object Home : Screens(route = "home")
+    object Grades : Screens(route = "grades")
+    object Calendar : Screens(route = "calendar")
+    object Settings : Screens(route = "settings")
+    object NewsDetail : Screens(route = "news-detail")
+    object Payments : Screens(route = "payments")
 }
